@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scoreDisplay = document.getElementById("score");
   const width = 28;
   let score = 0;
+  let pacDotCount = 0;
   const grid = document.querySelector(".grid");
   const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 2, 2, 1, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 2, 2, 2, 2, 1,
     1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2,
     2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 1,
     2, 2, 2, 2, 2, 2, 1, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 0, 1,
@@ -134,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function pacDotEaten() {
     if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
       score++;
+      pacDotCount++;
       scoreDisplay.innerHTML = score;
       squares[pacmanCurrentIndex].classList.remove("pac-dot");
     }
@@ -241,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //check for a win - more is when this score is reached
   function checkForWin() {
-    if (score === 274) {
+    if (pacDotCount === 274) {
       ghosts.forEach((ghost) => clearInterval(ghost.timerId));
       document.removeEventListener("keyup", movePacman);
       setTimeout(function () {
