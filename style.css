@@ -1,0 +1,92 @@
+body{
+    background: url('futurama_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 560px;
+    /* height: 560px; */
+    background-color: black;
+    margin: auto;
+    margin-top: 100px;
+}
+  
+.grid div {
+    width: 20px;
+    height: 20px;
+}
+
+.pac-dot {
+    background-color: yellow;   
+    border: 8px solid black;
+    box-sizing: border-box;
+}
+
+.wall {
+    background-color: black;
+    outline: 1.5px solid blue
+}
+
+.power-pellet {
+    background-color: white;
+    /* outline: 1px solid black; */
+    border-radius: 10px;
+}
+
+.ghost {
+    position: relative;
+    border-radius: 10px 10px 2px 2px;
+}
+
+.ghost::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: black;
+    border-radius: 50%;
+    left: 3px;
+    top: 5px;
+    border: 2px solid white;
+}
+
+.ghost::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: black;
+    border-radius: 50%;
+    right: 3px;
+    top: 5px;
+    border: 2px solid white;
+}
+
+.blinky {
+    background-color: red;
+}
+
+.pinky {
+    background-color: pink;
+}
+
+.inky {
+    background-color: cyan;
+}
+
+.clyde {
+    background-color: orange;     
+}
+
+.pac-man {
+    background-color: yellow;
+    border-radius: 10px;
+}
+
+.scared-ghost {
+    background-color: aquamarine;
+}
