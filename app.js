@@ -1,5 +1,3 @@
-console.log("hey world");
-
 document.addEventListener("DOMContentLoaded", () => {
   const scoreDisplay = document.getElementById("score");
   const width = 28;
@@ -134,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // what happens when you eat a pac-dot
   function pacDotEaten() {
     if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
-      score++;
+      score += 10;
       pacDotCount++;
       scoreDisplay.innerHTML = score;
       squares[pacmanCurrentIndex].classList.remove("pac-dot");
@@ -144,7 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //what happens when you eat a power-pellet
   function powerPelletEaten() {
     if (squares[pacmanCurrentIndex].classList.contains("power-pellet")) {
-      score += 10;
+      score += 50;
+      scoreDisplay.innerHTML = score;
       ghosts.forEach((ghost) => (ghost.isScared = true));
       setTimeout(unScareGhosts, 10000);
       squares[pacmanCurrentIndex].classList.remove("power-pellet");
@@ -220,7 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "scared-ghost"
         );
         ghost.currentIndex = ghost.startIndex;
-        score += 100;
+        score += 200;
+        scoreDisplay.innerHTML = score;
         squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
       }
       checkForGameOver();
