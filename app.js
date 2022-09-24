@@ -241,9 +241,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  //check for a win - more is when this score is reached
+  // Count the number of pac-dots
+  let totalPacDots = 0;
+  for (let i = 0; i < layout.length; i++) {
+    if (layout[i] === 0) {
+      totalPacDots++;
+    }
+  }
+
+  //check for a win - when all pac-dots are eaten
   function checkForWin() {
-    if (pacDotCount === 274) {
+    if (pacDotCount === totalPacDots) {
       ghosts.forEach((ghost) => clearInterval(ghost.timerId));
       document.removeEventListener("keyup", movePacman);
       setTimeout(function () {
