@@ -1,5 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Audio
+  function playAudio(audio) {
+    const soundEffect = new Audio(audio);
+    soundEffect.play();
+  }
+  const audioGameStart = "./sounds/game_start.wav";
+  const audioEatGhost = "./sounds/eat_ghost.wav";
+  const audioDeath = "./sounds/death.wav";
+  const audioMunch = "./sounds/munch.wav";
+  const audioPill = "./sounds/pill.wav";
+
+  // Start game
   function startGame() {
+    playAudio(audioGameStart);
+    document.getElementById("start-button").style.display = "none";
     const scoreDisplay = document.getElementById("score");
     const width = 28;
     let score = 0;
@@ -144,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // what happens when you eat a pac-dot
     function pacDotEaten() {
       if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
+        playAudio(audioMunch);
         score += 10;
         pacDotCount++;
         scoreDisplay.innerHTML = score;
@@ -154,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //what happens when you eat a power-pellet
     function powerPelletEaten() {
       if (squares[pacmanCurrentIndex].classList.contains("power-pellet")) {
+        playAudio(audioPill);
         score += 50;
         scoreDisplay.innerHTML = score;
         ghosts.forEach((ghost) => (ghost.isScared = true));
@@ -232,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ghost.isScared &&
           squares[ghost.currentIndex].classList.contains("pac-man")
         ) {
+          playAudio(audioEatGhost);
           squares[ghost.currentIndex].classList.remove(
             ghost.className,
             "ghost",
@@ -307,8 +324,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 directions[Math.floor(Math.random() * directions.length)];
             }
             //else find a new random direction to go in
-          } else console.log("I am finding new direction to go1");
-          direction = directions[Math.floor(Math.random() * directions.length)];
+          } else {
+            direction =
+              directions[Math.floor(Math.random() * directions.length)];
+          }
         } else if (
           //if ghost is in the ghost-lair or the empty-area
           !squares[ghost.currentIndex + direction].classList.contains(
@@ -356,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
         squares[pacmanCurrentIndex].classList.contains("ghost") &&
         !squares[pacmanCurrentIndex].classList.contains("scared-ghost")
       ) {
+        playAudio(audioDeath);
         ghosts.forEach((ghost) => clearInterval(ghost.timerId));
         document.removeEventListener("keyup", movePacman);
         setTimeout(function () {
