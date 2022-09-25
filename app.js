@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 2, 2, 2, 2, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2,
     1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2,
     2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 1,
     2, 2, 2, 2, 2, 2, 1, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 0, 1,
@@ -62,6 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
         squares[i].classList.add("ghost-lair");
       } else if (layout[i] === 3) {
         squares[i].classList.add("power-pellet");
+      } else {
+        squares[i].classList.add("empty");
       }
     }
   }
@@ -71,17 +73,19 @@ document.addEventListener("DOMContentLoaded", () => {
   //draw pacman onto the board
   let pacmanCurrentIndex = 490;
   squares[pacmanCurrentIndex].classList.add("pac-man");
-  //get the coordinates of pacman on the grid with X and Y axis
-  // function getCoordinates(index) {
-  //   return [index % width, Math.floor(index / width)]
-  // }
 
-  // console.log(getCoordinates(pacmanCurrentIndex))
+  //get the coordinates of pacman on the grid with X and Y axis
+  function getCoordinates(index) {
+    return [index % width, Math.floor(index / width)];
+  }
+
+  console.log(getCoordinates(pacmanCurrentIndex));
 
   //move pacman
   function movePacman(e) {
     squares[pacmanCurrentIndex].classList.remove("pac-man");
     switch (e.keyCode) {
+      // go left
       case 37:
         if (
           pacmanCurrentIndex % width !== 0 &&
@@ -93,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
           pacmanCurrentIndex = 391;
         }
         break;
+      // go up
       case 38:
         if (
           pacmanCurrentIndex - width >= 0 &&
@@ -101,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         )
           pacmanCurrentIndex -= width;
         break;
+      // go right
       case 39:
         if (
           pacmanCurrentIndex % width < width - 1 &&
@@ -112,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
           pacmanCurrentIndex = 364;
         }
         break;
+      // go down
       case 40:
         if (
           pacmanCurrentIndex + width < width * width &&
@@ -181,15 +188,20 @@ document.addEventListener("DOMContentLoaded", () => {
     squares[ghost.currentIndex].classList.add("ghost");
   });
 
-  //move the Ghosts randomly
-  ghosts.forEach((ghost) => moveGhost(ghost));
+  //move the Ghosts
+  // ghosts.forEach((ghost) => moveGhost(ghost));
+  moveGhostSmart(ghosts[0]); // move blinky
+  moveGhostSmart(ghosts[1]); // move pinky
+  moveGhostBasic(ghosts[2]); // move inky
+  moveGhostBasic(ghosts[3]); // move clyde
 
-  function moveGhost(ghost) {
+  // Ghosts move randomly
+  function moveGhostBasic(ghost) {
     const directions = [-1, +1, width, -width];
     let direction = directions[Math.floor(Math.random() * directions.length)];
 
     ghost.timerId = setInterval(function () {
-      //if the next squre your ghost is going to go to does not have a ghost and does not have a wall
+      //if the next square your ghost is going to go to does not have a ghost and does not have a wall
       if (
         !squares[ghost.currentIndex + direction].classList.contains("ghost") &&
         !squares[ghost.currentIndex + direction].classList.contains("wall")
@@ -200,8 +212,100 @@ document.addEventListener("DOMContentLoaded", () => {
         //move into that space
         ghost.currentIndex += direction;
         squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
-        //else find a new random direction ot go in
+        //else find a new random direction to go in
       } else direction = directions[Math.floor(Math.random() * directions.length)];
+
+      //if the ghost is currently scared
+      if (ghost.isScared) {
+        squares[ghost.currentIndex].classList.add("scared-ghost");
+      }
+
+      //if the ghost is currently scared and pacman is on it
+      if (
+        ghost.isScared &&
+        squares[ghost.currentIndex].classList.contains("pac-man")
+      ) {
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className,
+          "ghost",
+          "scared-ghost"
+        );
+        ghost.currentIndex = ghost.startIndex;
+        score += 200;
+        scoreDisplay.innerHTML = score;
+        squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
+      }
+      checkForGameOver();
+    }, ghost.speed);
+  }
+
+  // Ghosts move towards pac-man
+  function moveGhostSmart(ghost) {
+    const directions = [-1, +1, width, -width];
+    let direction = directions[Math.floor(Math.random() * directions.length)];
+
+    ghost.timerId = setInterval(function () {
+      //if ghost is not in the ghost-lair or empty-area
+      if (
+        !squares[ghost.currentIndex + direction].classList.contains(
+          "ghost-lair"
+        ) &&
+        !squares[ghost.currentIndex + direction].classList.contains("empty")
+      ) {
+        if (
+          !squares[ghost.currentIndex + direction].classList.contains(
+            "ghost"
+          ) &&
+          !squares[ghost.currentIndex + direction].classList.contains("wall")
+        ) {
+          //remove the ghosts classes
+          squares[ghost.currentIndex].classList.remove(ghost.className);
+          squares[ghost.currentIndex].classList.remove("ghost", "scared-ghost");
+
+          //move into that space
+          const [ghostX, ghostY] = getCoordinates(ghost.currentIndex);
+          const [pacManX, pacManY] = getCoordinates(pacmanCurrentIndex);
+          const [ghostNextX, ghostNextY] = getCoordinates(
+            ghost.currentIndex + direction
+          );
+
+          function isXCoordCloser() {
+            if (Math.abs(ghostNextX - pacManX) < Math.abs(ghostX - pacManX)) {
+              return true;
+            } else return false;
+          }
+
+          function isYCoordCloser() {
+            if (Math.abs(ghostNextY - pacManY) < Math.abs(ghostY - pacManY)) {
+              return true;
+            } else return false;
+          }
+
+          if (isXCoordCloser() || isYCoordCloser()) {
+            ghost.currentIndex += direction;
+            squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
+          } else {
+            squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
+            direction =
+              directions[Math.floor(Math.random() * directions.length)];
+          }
+          //else find a new random direction to go in
+        } else
+          direction = directions[Math.floor(Math.random() * directions.length)];
+      } else if (
+        //if the next square your ghost is going to go to does not have a ghost and does not have a wall
+        !squares[ghost.currentIndex + direction].classList.contains("ghost") &&
+        !squares[ghost.currentIndex + direction].classList.contains("wall")
+      ) {
+        //remove the ghosts classes
+        squares[ghost.currentIndex].classList.remove(ghost.className);
+        squares[ghost.currentIndex].classList.remove("ghost", "scared-ghost");
+        //move into that space
+        ghost.currentIndex += direction;
+        squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
+        //else find a new random direction to go in
+      } else
+        direction = directions[Math.floor(Math.random() * directions.length)];
 
       //if the ghost is currently scared
       if (ghost.isScared) {
