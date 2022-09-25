@@ -245,14 +245,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let direction = directions[Math.floor(Math.random() * directions.length)];
 
     ghost.timerId = setInterval(function () {
-      //if ghost is not in the ghost-lair or empty-area
+      //if ghost is not in the ghost-lair and not in the empty-area
       if (
-        !squares[ghost.currentIndex + direction].classList.contains(
-          "ghost-lair"
-        ) &&
-        !squares[ghost.currentIndex + direction].classList.contains("empty")
+        !(
+          squares[ghost.currentIndex].classList.contains("ghost-lair") ||
+          squares[ghost.currentIndex].classList.contains("empty")
+        )
       ) {
         if (
+          //if the next square your ghost is going to go to does not have a ghost and does not have a wall
           !squares[ghost.currentIndex + direction].classList.contains(
             "ghost"
           ) &&
@@ -290,10 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
               directions[Math.floor(Math.random() * directions.length)];
           }
           //else find a new random direction to go in
-        } else
-          direction = directions[Math.floor(Math.random() * directions.length)];
+        } else console.log("I am finding new direction to go1");
+        direction = directions[Math.floor(Math.random() * directions.length)];
       } else if (
-        //if the next square your ghost is going to go to does not have a ghost and does not have a wall
+        //if ghost is in the ghost-lair or the empty-area
         !squares[ghost.currentIndex + direction].classList.contains("ghost") &&
         !squares[ghost.currentIndex + direction].classList.contains("wall")
       ) {
