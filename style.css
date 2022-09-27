@@ -1,8 +1,8 @@
 body{
     background: linear-gradient(
-        rgba(0, 0, 0, 0.4), 
-        rgba(0, 0, 0, 0.4)
-      ), url('futurama_background.jpg') no-repeat center center fixed;
+        rgba(0, 0, 255, 0.5), 
+        rgba(0, 0, 255, 0.5)
+      ), url('arcade_background.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -94,7 +94,7 @@ body{
 }
 
 .inky {
-    background-color: lawngreen;
+    background-color: cyan;
 }
 
 .clyde {
@@ -107,7 +107,7 @@ body{
 }
 
 .scared-ghost {
-    background-color: aquamarine;
+    background-color: blue;
 }
 
 .start {
