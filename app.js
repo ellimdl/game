@@ -114,8 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start game
   function loadGame() {
-    document.getElementById("start-button").style.display = "none";
-
     //get the coordinates of pacman on the grid with X and Y axis
     function getCoordinates(index) {
       return [index % width, Math.floor(index / width)];
@@ -405,8 +403,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function startCountdown() {
+    let countdownNumber = 3;
+    const countdown = setInterval(function () {
+      scoreDisplay.innerHTML = countdownNumber--;
+      if (countdownNumber === 0) {
+        clearInterval(countdown);
+        setTimeout(function () {
+          scoreDisplay.innerHTML = "Start!";
+        }, 1000);
+        setTimeout(function () {
+          scoreDisplay.innerHTML = "";
+        }, 2000);
+      }
+    }, 1000);
+    countdown;
+  }
+
   function startGame() {
+    startCountdown();
     playAudio(audioGameStart);
+    document.getElementById("start-button").style.display = "none";
     setTimeout(loadGame, 4000);
   }
   document.getElementById("start-button").addEventListener("click", startGame);
