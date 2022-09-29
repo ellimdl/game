@@ -138,13 +138,15 @@ document.addEventListener("DOMContentLoaded", () => {
               pacmanCurrentIndex -= 1;
               squares[pacmanCurrentIndex].classList.add("pac-man");
             }
+            if (squares[pacmanCurrentIndex - 1] === squares[363]) {
+              squares[pacmanCurrentIndex].classList.remove("pac-man");
+              pacmanCurrentIndex = 391;
+              squares[pacmanCurrentIndex].classList.add("pac-man");
+            }
             pacDotEaten();
             powerPelletEaten();
             checkForGameOver();
             checkForWin();
-            // if (squares[pacmanCurrentIndex - 1] === squares[363]) {
-            //   pacmanCurrentIndex = 391;
-            // }
           }, 150);
           break;
         // go up
@@ -181,13 +183,15 @@ document.addEventListener("DOMContentLoaded", () => {
               pacmanCurrentIndex += 1;
               squares[pacmanCurrentIndex].classList.add("pac-man");
             }
+            if (squares[pacmanCurrentIndex + 1] === squares[392]) {
+              squares[pacmanCurrentIndex].classList.remove("pac-man");
+              pacmanCurrentIndex = 364;
+              squares[pacmanCurrentIndex].classList.add("pac-man");
+            }
             pacDotEaten();
             powerPelletEaten();
             checkForGameOver();
             checkForWin();
-            // if (squares[pacmanCurrentIndex + 1] === squares[392]) {
-            //   pacmanCurrentIndex = 364;
-            // }
           }, 150);
           break;
         // go down
